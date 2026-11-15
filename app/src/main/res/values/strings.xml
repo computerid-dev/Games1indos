@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Bajaj Nusantara</string>
+    <string name="play_now">Main Sekarang</string>
+    <string name="best_score">Skor Terbaik</string>
+    <string name="coins_collected">Koin Nusantara</string>
+    <string name="stage_select">Pilih Wilayah</string>
+    <string name="controls_guide">Panduan Kontrol</string>
+    <string name="pause_game">Jeda Permainan</string>
+    <string name="resume_game">Lanjutkan</string>
+    <string name="restart_game">Ulangi</string>
+    <string name="back_to_menu">Menu Utama</string>
+</resources>

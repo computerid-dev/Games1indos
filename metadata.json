@@ -1,0 +1,6 @@
+{
+  "name": "Bajaj Nusantara",
+  "description": "3D landscape Indonesian arcade adventure built with Three.js supporting touch, keyboard, and mouse controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Bajaj Nusantara 3D</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #140b08;
+      touch-action: none;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    #game-canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      outline: none;
+      cursor: crosshair;
+    }
+    #loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #2d140e 0%, #140b08 100%);
+      color: #fff8e7;
+      z-index: 10;
+      gap: 12px;
+      transition: opacity 0.35s ease;
+    }
+    #loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(255, 179, 0, 0.25);
+      border-top-color: #ffb300;
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game-canvas" tabindex="0"></canvas>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div id="loader-text">Memuat Dunia 3D Nusantara...</div>
+  </div>
+
+  <script src="textures.js"></script>
+  <script src="audio.js"></script>
+  <script>
+    (function loadThreeWithFallback() {
+      const cdns = [
+        "https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js",
+        "https://unpkg.com/three@0.149.0/build/three.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+      ];
+      let index = 0;
+
+      function startGameScript() {
+        const script = document.createElement("script");
+        script.src = "game.js";
+        script.onload = function () {
+          const loader = document.getElementById("loader");
+          if (loader) loader.classList.add("hidden");
+        };
+        script.onerror = function () {
+          notifyError("Gagal memuat skrip permainan.");
+        };
+        document.body.appendChild(script);
+      }
+
+      function notifyError(msg) {
+        const loaderText = document.getElementById("loader-text");
+        if (loaderText) loaderText.textContent = msg;
+        if (window.AndroidBridge && typeof window.AndroidBridge.onEngineError === "function") {
+          window.AndroidBridge.onEngineError(msg);
+        }
+      }
+
+      function tryNext() {
+        if (window.THREE) {
+          startGameScript();
+          return;
+        }
+        if (index >= cdns.length) {
+          notifyError("Tidak dapat memuat Three.js 3D Engine. Periksa koneksi internet Anda.");
+          return;
+        }
+        const url = cdns[index++];
+        const s = document.createElement("script");
+        s.src = url;
+        s.async = true;
+        s.onload = function () {
+          if (window.THREE) {
+            startGameScript();
+          } else {
+            tryNext();
+          }
+        };
+        s.onerror = function () {
+          tryNext();
+        };
+        document.head.appendChild(s);
+      }
+
+      tryNext();
+    })();
+  </script>
+</body>
+</html>
